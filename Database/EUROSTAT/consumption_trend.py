@@ -22,14 +22,17 @@ products = list(pd.read_excel('ITA_Use_basic.xls', skiprows=10, header=[1], inde
 cathegories = ['Total final use']
 
 Trend = pd.DataFrame(index=products, columns=pd.MultiIndex.from_product([years, cathegories]))
+TrendShares = pd.DataFrame(index=products, columns=pd.MultiIndex.from_product([years, cathegories]))
 
 for y in past_years:
     Y = pd.read_excel('ITA_Use_basic.xls', sheet_name='Data'+year_map[y], skiprows=10, header=[1], index_col=[0]).iloc[0:65].loc[:,cathegories]
     for p in products:
         for c in cathegories:
             Trend.loc[p,(y,c)] = Y.loc[p,c]
+            TrendShares.loc[p,(y,c)] = Y.loc[p,c] / Y.loc[:,c].sum()
 
 Trend = Trend.stack()
+TrendShares = TrendShares.stack()
 
 #%% Projecting final demand by product
 
@@ -43,7 +46,30 @@ for p in products:
 
 Trend[Trend < 0] = 0
 Trend_pref = Trend
-Trend_pref = Trend / Trend.sum(axis=0)           
+Trend_pref = Trend / Trend.sum(axis=0)
+          
+#%% Projecting final demand shares by product
+
+from scipy import interpolate
+
+for p in products:
+    for c in cathegories:
+        f_s = interpolate.interp1d(list(range(1,len(past_years)+1)), TrendShares.loc[p,c].iloc[0:len(past_years)], fill_value="extrapolate")
+        for y in future_years:
+            TrendShares.loc[(p,c),y] = f_s(y-2010)
+
+TrendShares[Trend < 0] = 0
+TrendShares = Trend
+TrendShares = Trend / Trend.sum(axis=0)           
 #%%
 TrendY = Trend.loc[(slice(None),'Total final use'),:].stack()
+
+Check = Trend / Trend.sum()
+zero = TrendShares - Check
+
+'''
+Interpolating the shares or 
+interpolating the totals and then computing the shares 
+brings to the same result
+'''
 
