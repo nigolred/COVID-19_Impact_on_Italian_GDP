@@ -86,6 +86,6 @@ def LK_plot (GDP_by_sec, mode='abs', file_title='GDP', fig_title='Net Italian GD
 
         k = k+1
     fig.update_layout(barmode='relative', title=fig_title, showlegend=True, font_family='Palatino Linotype', font_size=20)
-    fig.write_html(file_title+'.html')
+    fig.write_html(file_title)
 
 
