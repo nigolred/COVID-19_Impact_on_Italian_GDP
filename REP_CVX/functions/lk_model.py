@@ -35,7 +35,7 @@ def LK_model(SUT,y,GDP):
     SUT.Y = pd.DataFrame(cv.multiply(y,YY).value, index=SUT.Y.index, columns=SUT.Y.columns)
     SUT.VA = pymrio.calc_F(SUT.va,SUT.X)
 
-def LK_plot (GDP_by_sec, net=False, file_title='GDP', fig_title='Net Italian GDP by sector from 2016 to 2030 in different scenarios with resepect to 2014 baseline [M€]'):
+def LK_plot (GDP_by_sec, mode='abs', file_title='GDP', fig_title='Net Italian GDP by sector from 2016 to 2030 in different scenarios with resepect to 2014 baseline [M€]'):
     from plotly.subplots import make_subplots
     import plotly.graph_objects as go
     
@@ -59,20 +59,33 @@ def LK_plot (GDP_by_sec, net=False, file_title='GDP', fig_title='Net Italian GDP
      'Transport equipment':'mediumorchid',
      'Wood & wood products':'sienna'}
     
+    colors = ['#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe', '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000']
+    
+    
     k = 1
     
     for s in scenarios:
         for a in activities:
-            if net:
-                data = GDP_by_sec.loc[a,s].T-GDP_by_sec.loc[a].iloc[0].T
-            else:
+            if mode=='net':
+                data = GDP_by_sec.loc[a,s].T-GDP_by_sec.loc[a].iloc[2].T
+            if mode=='net_perc':
+                data = 100*(GDP_by_sec.loc[a,s].T-GDP_by_sec.loc[a].iloc[2].T)/GDP_by_sec.loc[a].iloc[2].T
+            if mode=='abs':
                 data = GDP_by_sec.loc[a,s].T
+            
+            if len(activities) == len(color):
+                colormap = color[a]
+            else:
+                colormap = colors[activities.index(a)]
+
             if k == 1:
                 first = True
             else:
                 first = False
-            fig.add_trace(go.Bar(name=a, x=years, y=data, showlegend=first, legendgroup=a, marker_color=color[a]), row=1, col=k)
+            fig.add_trace(go.Bar(name=a, x=years, y=data, showlegend=first, legendgroup=a, marker_color=colormap), row=1, col=k)
 
         k = k+1
-    fig.update_layout(barmode='relative', title=fig_title, showlegend=True)
+    fig.update_layout(barmode='relative', title=fig_title, showlegend=True, font_family='Palatino Linotype', font_size=20)
     fig.write_html(file_title+'.html')
+
+

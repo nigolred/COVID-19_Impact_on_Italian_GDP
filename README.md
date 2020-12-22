@@ -1,4 +1,4 @@
-# COVID-30
+# COVID-19 Impact on Italian Energy System
 This project will take advantage of the work done within CIVICS Kenya to use the same framework to analyse the following topic:
 The aim of the study, a first version to be completed before year-end (target October 2020) and with subsequent updates at regular intervals, is an assessment of the potential effects for Italy of the current Covid-19 crisis in terms of energy consumption and production by type of source, CO2 emissions, by comparing different scenarios up to 2025 and 2030.
 

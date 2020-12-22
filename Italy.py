@@ -49,9 +49,10 @@ for s in scenarios:
 
 #%% Exporting results
 
-with pd.ExcelWriter('Results/'+Cases[Case]['code']+'.xlsx') as writer:  
+with pd.ExcelWriter('Results/'+Cases[Case]['code']+'.xlsx') as writer:
     GDP_by_sec.unstack().unstack(level=1).T.to_excel(writer, sheet_name='GDP by sector')
     GDPw_by_sec.unstack().unstack(level=1).T.to_excel(writer, sheet_name='Share of GDP by sector')
 
-cvx.LK_plot(GDP_by_sec, file_title='Results/'+Cases[Case]['code']+'_NetGDP'+'.htlm', fig_title='Net Italian GDP by sector from 2016 to 2030 in different scenarios with resepect to 2016 baseline '+Cases[Case]['title']+' [M€]', net=True)
-cvx.LK_plot(GDP_by_sec, file_title='Results/'+Cases[Case]['code']+'_GDP'+'.htlm', fig_title='Italian GDP by sector from 2016 to 2030 in different scenarios '+Cases[Case]['title']+' [M€]', net=False)
+cvx.LK_plot(GDP_by_sec, file_title='Results/'+Cases[Case]['code']+'_NetGDP'+'.htlm', fig_title='Net Italian GDP by sector from 2016 to 2030 in different scenarios with resepect to 2016 baseline '+Cases[Case]['title']+' [M€]', mode='net')
+cvx.LK_plot(GDP_by_sec, file_title='Results/'+Cases[Case]['code']+'_NetPercGDP'+'.htlm', fig_title='Net Italian percentual GDP change by sector from 2016 to 2030 in different scenarios with resepect to 2016 baseline '+Cases[Case]['title']+' [%]', mode='net_perc')
+cvx.LK_plot(GDP_by_sec, file_title='Results/'+Cases[Case]['code']+'_GDP'+'.htlm', fig_title='Italian GDP by sector from 2016 to 2030 in different scenarios '+Cases[Case]['title']+' [M€]', mode='abs')
