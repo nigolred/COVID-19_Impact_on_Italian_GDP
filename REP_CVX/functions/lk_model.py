@@ -35,16 +35,25 @@ def LK_model(SUT,y,GDP):
     SUT.Y = pd.DataFrame(cv.multiply(y,YY).value, index=SUT.Y.index, columns=SUT.Y.columns)
     SUT.VA = pymrio.calc_F(SUT.va,SUT.X)
 
-def LK_plot (GDP_by_sec, mode='abs', file_title='GDP', fig_title='Net Italian GDP by sector from 2016 to 2030 in different scenarios with resepect to 2014 baseline [M€]'):
+def LK_plot (GDP_by_sec, mode='abs', file_title='GDP', fig_title='', shared_yaxes=False, print_svg=False, ref_year=2016):
     from plotly.subplots import make_subplots
     import plotly.graph_objects as go
     
     activities = list(GDP_by_sec.index)
     years = list(dict.fromkeys(GDP_by_sec.columns.get_level_values(level=1)))
+    years_paper = [2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030]
     scenarios = list(dict.fromkeys(GDP_by_sec.columns.get_level_values(level=0)))
-    
-    fig = make_subplots(rows=1, cols=4, subplot_titles=scenarios)
+    GDP_paper = GDP_by_sec.loc[:,(slice(None),years_paper)]
 
+    if shared_yaxes==True:
+        horizontal_spacing = 0.01
+    else:
+        horizontal_spacing = None
+  
+    fig = make_subplots(rows=1, cols=4, subplot_titles=scenarios, shared_yaxes=shared_yaxes, horizontal_spacing=horizontal_spacing)
+    for i in fig['layout']['annotations']:
+        i['font'] = dict(size=25)
+        
     color = {'Chemicals':'limegreen',
      'Construction':'dimgrey',
      'Food, beverages & tobacco':'goldenrod',
@@ -68,6 +77,9 @@ def LK_plot (GDP_by_sec, mode='abs', file_title='GDP', fig_title='Net Italian GD
         for a in activities:
             if mode=='net':
                 data = GDP_by_sec.loc[a,s].T-GDP_by_sec.loc[a].iloc[2].T
+            if mode=='paper':
+                data = GDP_paper.loc[a,s].T-GDP_by_sec.loc[a].iloc[2].T
+                years = years_paper
             if mode=='net_perc':
                 data = 100*(GDP_by_sec.loc[a,s].T-GDP_by_sec.loc[a].iloc[2].T)/GDP_by_sec.loc[a].iloc[2].T
             if mode=='abs':
@@ -86,6 +98,7 @@ def LK_plot (GDP_by_sec, mode='abs', file_title='GDP', fig_title='Net Italian GD
 
         k = k+1
     fig.update_layout(barmode='relative', title=fig_title, showlegend=True, font_family='Palatino Linotype', font_size=20)
-    fig.write_html(file_title)
+    fig.write_html(file_title+'.html')
+
 
 
