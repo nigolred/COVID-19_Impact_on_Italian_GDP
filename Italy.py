@@ -47,6 +47,13 @@ for s in scenarios:
                 GDP_by_sec.loc[:,(s,y)] = Italy.VA.groupby(level=1, sort=False).sum().loc['GDP'].loc['Activities'].groupby(level=1, sort=False).sum()
                 GDPw_by_sec.loc[:,(s,y)] = Italy.VA.groupby(level=1, sort=False).sum().loc['GDP'].loc['Activities'].groupby(level=1, sort=False).sum() / Italy.VA.groupby(level=1).sum().loc['GDP'].loc['Activities'].groupby(level=1, sort=False).sum().sum()
 
+#%% Exploring results
+ref_year = 2030
+At_refyear = GDP_by_sec.loc[:,(slice(None),ref_year)]
+for i in list(GDP_by_sec.index):
+    for j in scenarios:
+        At_refyear.loc[i,(j,ref_year)] =  (GDP_by_sec.loc[i,(j,ref_year)] - GDP_by_sec.loc[i,('Baseline',2020)]) / GDP_by_sec.loc[i,('Baseline',2020)] *100
+
 #%% Exporting results
 
 with pd.ExcelWriter('Results/'+Cases[Case]['code']+'.xlsx') as writer:
