@@ -24,4 +24,4 @@ In this folder an excel file for managing the non-database exogenous parameters 
 ### Conceputal_model.xlsx
 Here a conceputal highly aggregated model is presented in excel.
 ### Italy.py
-Here the main code of the repository is stored. A for loop around years and scenarios is performed. The user has the possibility of selecting among different optios (e.g. running with fixed final demand shares or with projected trends, which is the mode adopted in the study).
+Here the main code of the repository is stored. A for loop around years and scenarios is performed as described in the paper. The user has the possibility of selecting among different optios (e.g. running with fixed final demand shares or with projected trends, which is the mode adopted in the study).
