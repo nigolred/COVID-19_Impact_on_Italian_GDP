@@ -35,7 +35,7 @@ def LK_model(SUT,y,GDP):
     SUT.Y = pd.DataFrame(cv.multiply(y,YY).value, index=SUT.Y.index, columns=SUT.Y.columns)
     SUT.VA = pymrio.calc_F(SUT.va,SUT.X)
 
-def LK_plot (GDP_by_sec, mode='abs', file_title='GDP', fig_title='', shared_yaxes=False, print_svg=False, ref_year=2016):
+def LK_plot (GDP_by_sec, mode='abs', file_title='GDP', fig_title='', shared_yaxes=False, print_svg=False, ref_year=2016, paper=False):
     from plotly.subplots import make_subplots
     import plotly.graph_objects as go
     
@@ -98,6 +98,13 @@ def LK_plot (GDP_by_sec, mode='abs', file_title='GDP', fig_title='', shared_yaxe
 
         k = k+1
     fig.update_layout(barmode='relative', title=fig_title, showlegend=True, font_family='Palatino Linotype', font_size=20)
+    if paper:
+        for trace in fig['data']: 
+            if(trace['name'] == 'Other sectors'): trace['visible'] = 'legendonly'
+        fig.update_layout(title=None)
+        fig.update_xaxes(tickfont=dict(size=18), dtick=5)
+        fig.write_image(file_title+'.svg', width=1650, height=750)
+
     fig.write_html(file_title+'.html')
 
 

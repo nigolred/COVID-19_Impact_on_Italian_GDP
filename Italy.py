@@ -23,6 +23,17 @@ Italy = cvx.C_SUT(r'Database\Italy_2016_SUT.xlsx', unit='M EUR')
 Preferences = pd.read_excel('Inputs/Inputs.xlsx', sheet_name=Cases[Case]['y'], header=[0,1], index_col=[0])
 ExpectedGDP = pd.read_excel('Inputs/Inputs.xlsx', sheet_name=Cases[Case]['GDP'], header=[0], index_col=[0])
 
+#%% Comparing intermediate and final consumption
+IntFin = pd.DataFrame()
+IntFin['Intermediate Cons'] = Italy.U.sum(axis=1).groupby(level=1, sort=False).sum()
+IntFin['Final Cons'] = Italy.Y.loc['Commodities'].groupby(level=1).sum()
+
+IntFin_p = pd.DataFrame(0, index=IntFin.index, columns=IntFin.columns)
+for i in range(len(IntFin_p.index)):
+    IntFin_p.iloc[i,0] = IntFin.iloc[i,0] / (IntFin.iloc[i,0] + IntFin.iloc[i,1])
+    IntFin_p.iloc[i,1] = IntFin.iloc[i,1] / (IntFin.iloc[i,0] + IntFin.iloc[i,1])
+
+#%%
 # Preparing results 
 years = list(range(2014,2014+len(ExpectedGDP.columns)))
 scenarios = ['Best','Medium','Worst','Baseline']
@@ -63,4 +74,4 @@ with pd.ExcelWriter('Results/'+Cases[Case]['code']+'.xlsx') as writer:
 cvx.LK_plot(GDP_by_sec, file_title='Results/'+Cases[Case]['code']+'_NetGDP', fig_title='Net Italian GDP by sector from 2016 to 2030 in different scenarios with resepect to 2016 baseline '+Cases[Case]['title']+' [M€]', mode='net')
 cvx.LK_plot(GDP_by_sec, file_title='Results/'+Cases[Case]['code']+'_NetPercGDP', fig_title='Net Italian percentual GDP change by sector from 2016 to 2030 in different scenarios with resepect to 2016 baseline '+Cases[Case]['title']+' [%]', mode='net_perc')
 cvx.LK_plot(GDP_by_sec, file_title='Results/'+Cases[Case]['code']+'_GDP', fig_title='Italian GDP by sector from 2016 to 2030 in different scenarios '+Cases[Case]['title']+' [M€]', mode='abs')
-cvx.LK_plot(GDP_by_sec, file_title='Results/'+Cases[Case]['code']+'_NetGDP'+'_paper', fig_title='Net Italian GDP by sector from 2020 to 2030 in different scenarios with resepect to 2016 baseline '+Cases[Case]['title']+' [M€]', mode='paper', shared_yaxes=True)
+cvx.LK_plot(GDP_by_sec, file_title='Results/'+Cases[Case]['code']+'_NetGDP'+'_paper', fig_title='Net Italian GDP by sector from 2020 to 2030 in different scenarios with resepect to 2016 baseline '+Cases[Case]['title']+' [M€]', mode='paper', shared_yaxes=True, paper=True)
