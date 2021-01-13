@@ -33,14 +33,18 @@ for i in range(len(IntFin_p.index)):
     IntFin_p.iloc[i,0] = IntFin.iloc[i,0] / (IntFin.iloc[i,0] + IntFin.iloc[i,1])
     IntFin_p.iloc[i,1] = IntFin.iloc[i,1] / (IntFin.iloc[i,0] + IntFin.iloc[i,1])
 
-#%%
+#%% Exploring aggregated preferences
+Pref = pd.DataFrame(Preferences.values, index=Italy.Z.index, columns=Preferences.columns).loc['Commodities'].groupby(level=1, sort=False).sum().loc[:,'Baseline']
+    
+#%% Leontief-Kantorovich model
+    
 # Preparing results 
 years = list(range(2014,2014+len(ExpectedGDP.columns)))
 scenarios = ['Best','Medium','Worst','Baseline']
 GDP_by_sec = pd.DataFrame(index=Italy.X_agg.loc['Activities'].index, columns=Preferences.columns)
 GDPw_by_sec = pd.DataFrame(index=Italy.X_agg.loc['Activities'].index, columns=Preferences.columns)
 
-#%% Runnig the Leontief Kantorovic model for every scenario-year
+# Runnig the Leontief Kantorovic model for every scenario-year
 
 for s in scenarios:
         for y in years:
