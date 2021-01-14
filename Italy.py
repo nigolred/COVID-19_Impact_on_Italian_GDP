@@ -9,7 +9,7 @@ import REP_CVX as cvx
 import pandas as pd
 
 # Choosing the mode
-Case = 'PT'
+Case = 'NC'
 
 Cases = {'PT': {'y': 'y_pt', 'code': 'ProjectedTrends', 'title': 'with projected demand trends', 'GDP':'GDP'},
          'NC': {'y': 'y_fx', 'code': 'NoPrefChange', 'title': 'with no change in preferences', 'GDP':'GDP'}
@@ -67,7 +67,8 @@ ref_year = 2030
 At_refyear = GDP_by_sec.loc[:,(slice(None),ref_year)]
 for i in list(GDP_by_sec.index):
     for j in scenarios:
-        At_refyear.loc[i,(j,ref_year)] =  (GDP_by_sec.loc[i,(j,ref_year)] - GDP_by_sec.loc[i,('Baseline',2020)]) / GDP_by_sec.loc[i,('Baseline',2020)] *100
+        At_refyear.loc[i,(j,ref_year)] =  (GDP_by_sec.loc[i,(j,ref_year)] - GDP_by_sec.loc[i,('Baseline',2016)]) / GDP_by_sec.loc[i,('Baseline',2016)] *100
+
 
 #%% Exporting results
 
@@ -79,3 +80,23 @@ cvx.LK_plot(GDP_by_sec, file_title='Results/'+Cases[Case]['code']+'_NetGDP', fig
 cvx.LK_plot(GDP_by_sec, file_title='Results/'+Cases[Case]['code']+'_NetPercGDP', fig_title='Net Italian percentual GDP change by sector from 2016 to 2030 in different scenarios with resepect to 2016 baseline '+Cases[Case]['title']+' [%]', mode='net_perc')
 cvx.LK_plot(GDP_by_sec, file_title='Results/'+Cases[Case]['code']+'_GDP', fig_title='Italian GDP by sector from 2016 to 2030 in different scenarios '+Cases[Case]['title']+' [M€]', mode='abs')
 cvx.LK_plot(GDP_by_sec, file_title='Results/'+Cases[Case]['code']+'_NetGDP'+'_paper', fig_title='Net Italian GDP by sector from 2020 to 2030 in different scenarios with resepect to 2016 baseline '+Cases[Case]['title']+' [M€]', mode='paper', shared_yaxes=True, paper=True)
+
+#%% Paper values in section 3.2. Run only if you are using Paper Aggregation
+
+# Measuring best performing sectors in Baseline case
+Pos = ['Food, beverages & tobacco','Utilities','Machinery','Transport equipment']
+Pos_increase = GDP_by_sec.loc[Pos,('Baseline',2030)].sum()-GDP_by_sec.loc[Pos,('Baseline',2016)].sum()
+Pos_increase_GDP2016 = Pos_increase/GDP_by_sec.loc[:,('Baseline',2016)].sum().sum()*100
+
+# Measuring best and worst performing sectors in Medium and Worst case
+VeryPos = ['Utilities','Transport equipment']
+VeryNeg = ['Textile & leather','Chemicals','Construction']
+VeryPos_increase =  pd.DataFrame(index=['Medium','Worst'], columns=['abs','perc'])
+VeryNeg_decrease =  pd.DataFrame(index=['Medium','Worst'], columns=['perc'])
+
+for i in ['Medium','Worst']:
+    VeryPos_increase.loc[i,'abs'] =  GDP_by_sec.loc[VeryPos,(i,2030)].sum()-GDP_by_sec.loc[VeryPos,(i,2016)].sum()
+    VeryPos_increase.loc[i,'perc'] =  (GDP_by_sec.loc[VeryPos,(i,2030)].sum()-GDP_by_sec.loc[VeryPos,(i,2016)].sum())/GDP_by_sec.loc[:,('Baseline',2016)].sum()*100
+    VeryNeg_decrease.loc[i,'perc'] =  (GDP_by_sec.loc[VeryNeg,(i,2030)].sum()-GDP_by_sec.loc[VeryNeg,(i,2016)].sum())/GDP_by_sec.loc[VeryNeg,('Baseline',2016)].sum().sum()*100
+
+
