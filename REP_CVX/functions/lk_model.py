@@ -41,7 +41,7 @@ def LK_plot (GDP_by_sec, mode='abs', file_title='GDP', fig_title='', shared_yaxe
     
     activities = list(GDP_by_sec.index)
     years = list(dict.fromkeys(GDP_by_sec.columns.get_level_values(level=1)))
-    years_paper = [2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030]
+    years_paper = [2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030]
     scenarios = list(dict.fromkeys(GDP_by_sec.columns.get_level_values(level=0)))
     GDP_paper = GDP_by_sec.loc[:,(slice(None),years_paper)]
 
@@ -49,8 +49,13 @@ def LK_plot (GDP_by_sec, mode='abs', file_title='GDP', fig_title='', shared_yaxe
         horizontal_spacing = 0.01
     else:
         horizontal_spacing = None
+        
+    if mode=='paper':
+        Y_tit = 'Change in real GDP [M€ @2016]'
+    else:
+        Y_tit = None
   
-    fig = make_subplots(rows=1, cols=4, subplot_titles=scenarios, shared_yaxes=shared_yaxes, horizontal_spacing=horizontal_spacing)
+    fig = make_subplots(rows=1, cols=4, subplot_titles=scenarios, shared_yaxes=shared_yaxes, horizontal_spacing=horizontal_spacing, y_title=Y_tit)
     for i in fig['layout']['annotations']:
         i['font'] = dict(size=25)
         

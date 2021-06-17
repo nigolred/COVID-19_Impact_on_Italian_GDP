@@ -9,7 +9,7 @@ import REP_CVX as cvx
 import pandas as pd
 
 # Choosing the mode
-Case = 'NC'
+Case = 'PT'
 
 Cases = {'PT': {'y': 'y_pt', 'code': 'ProjectedTrends', 'title': 'with projected demand trends', 'GDP':'GDP'},
          'NC': {'y': 'y_fx', 'code': 'NoPrefChange', 'title': 'with no change in preferences', 'GDP':'GDP'}
